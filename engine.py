@@ -63,7 +63,7 @@ class Engine:
     def num_power_activate(self):
         if self.num_power is not None:
             if self.num_power == "S":
-                self.score **= 2
+                self.score *= 5
                 self.prev_action = "S Squared"
             if self.num_power == "S&L":
                 self.score *= 5
