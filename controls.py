@@ -1,12 +1,12 @@
 
 class Controls:
-    def button_controls(self, game, control_input):
+    def button_controls(self, engine, control_input):
         controls_dict = {
-            "w": game.add,
-            "a": game.multi,
-            "s": game.sub,
-            "d": game.divi,
-            "q": game.num_power_activate,
+            "w": engine.add,
+            "a": engine.multi,
+            "s": engine.sub,
+            "d": engine.divi,
+            "q": engine.num_power_activate,
         }
 
         if control_input in controls_dict:
