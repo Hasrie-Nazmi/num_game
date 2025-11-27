@@ -32,8 +32,12 @@ class Game:
             image = pygame.transform.scale(image, (300, 400))
             self.screen.blit(image, images[img])
 
+        self.write_text("NOTE: During gameplay, tap",
+                        (255, 255, 255), (675, 500), font_size=15)
+        self.write_text("key twice to confirm action",
+                        (255, 255, 255), (675, 525), font_size=15)
         self.write_text("Press 'SPACE' to continue",
-                        (255, 255, 255), (700, 600), font_size=15)
+                        (255, 255, 255), (700, 700), font_size=15)
         pygame.display.flip()
 
         key_input = self.wait_for_key()
@@ -49,11 +53,11 @@ class Game:
         self.set_background_img("assets/endgame_background.jpg")
 
         self.write_text("GAME OVER!", (255, 255, 255),
-                        (self.screen_width/2-100, self.screen_height/2))
-        self.write_text("SCORE: ", (255, 255, 255),
-                        (self.screen_width/2-150, self.screen_height/2+50))
-        self.write_text("ROUNDS: ", (255, 255, 255),
-                        (self.screen_width/2+25, self.screen_height/2+50))
+                        (self.screen_width/2-75, self.screen_height/2))
+        self.write_text(f"SCORE: {self.engine.get_high_scores():.2f}", (255, 255, 255),
+                        (self.screen_width/2-300, self.screen_height/2+100))
+        self.write_text(f"ROUNDS: {self.engine.get_rounds()}", (255, 255, 255),
+                        (self.screen_width/2+125, self.screen_height/2+100))
 
         pygame.display.flip()
 
@@ -88,7 +92,10 @@ class Game:
                         self.engine.get_next_num()
                         self.engine.get_rounds()
                         key_input = self.wait_for_key()
-                        self.controls.button_controls(self.engine, key_input)
+                        key_input_confirm = self.wait_for_key()
+                        if key_input == key_input_confirm:
+                            self.controls.button_controls(
+                                self.engine, key_input_confirm)
                         self.clock.tick(60)
                         pygame.display.flip()
 
