@@ -12,7 +12,6 @@ class Game:
         self.controls = Controls()
         self.screen = pygame.display.set_mode((1000, 800))
         self.title = pygame.display.set_caption("NUM_GAME")
-        self.font = pygame.font.Font("Neuropol X Rg.otf", 20)
         self.clock = pygame.time.Clock()
         self.running = True
         display_info = pygame.display.Info()
@@ -20,19 +19,21 @@ class Game:
         self.screen_height = display_info.current_h
 
     def start_screen(self):
-        game_instructions = ("Addition: Adds Score with Next Number but will minus 1 life\n"
-                             "Substraction: Substract Score with Next Number. It will minus 1 life but you gain 1 power token. Accumulate 10 tokens, you can multiply your score by 5. Accumulate 20 tokens, you can multiply both your Score and Lives by 5\n"
-                             "Multiplication: Multiply Score with Next Number but it will substract your Lives with the Next Number\n"
-                             "Division: Divides Score with Next Number but you gain Lives according to the Next Number\n"
-                             "Power Up: Activate the Power Up According to the accumulated Power Tokens")
 
-        self.screen.fill((30, 30, 30))
+        images = {"add.jpg": (15, 10),
+                  "sub.jpg": (350, 10),
+                  "multi.jpg": (685, 10),
+                  "divi.jpg": (15, 400),
+                  "powerup.jpg": (350, 400)}
+        self.screen.fill((30, 30, 60))
+        for img in images:
 
-        self.write_text(20, "NUM_GAME", (255, 255, 255),
-                        (self.screen_width/2-75, 5))
-        self.write_text(20, game_instructions, (255, 255, 255),
-                        (10, 50))
+            image = pygame.image.load(f"assets/instructions/{img}")
+            image = pygame.transform.scale(image, (300, 400))
+            self.screen.blit(image, images[img])
 
+        self.write_text("Press 'SPACE' to continue",
+                        (255, 255, 255), (700, 600), font_size=15)
         pygame.display.flip()
 
         key_input = self.wait_for_key()
@@ -40,18 +41,18 @@ class Game:
             return True
 
     def game_start(self):
-        self.set_background_img()
+        self.set_background_img("assets/game_background.jpg")
         self.draw_game_info()
         pygame.display.flip()
 
     def end_screen(self):
-        self.screen.fill((30, 30, 30))
+        self.set_background_img("assets/endgame_background.jpg")
 
-        self.write_text(20, "GAME OVER!", (255, 255, 255),
+        self.write_text("GAME OVER!", (255, 255, 255),
                         (self.screen_width/2-100, self.screen_height/2))
-        self.write_text(20, "SCORE: ", (255, 255, 255),
+        self.write_text("SCORE: ", (255, 255, 255),
                         (self.screen_width/2-150, self.screen_height/2+50))
-        self.write_text(20, "ROUNDS: ", (255, 255, 255),
+        self.write_text("ROUNDS: ", (255, 255, 255),
                         (self.screen_width/2+25, self.screen_height/2+50))
 
         pygame.display.flip()
@@ -91,19 +92,20 @@ class Game:
                         self.clock.tick(60)
                         pygame.display.flip()
 
-    def set_background_img(self):
-        bg = pygame.image.load("background.jpg").convert()
+    def set_background_img(self, img):
+        bg = pygame.image.load(img).convert()
         bg = pygame.transform.scale(
             bg, (self.screen_width, self.screen_height))
         self.screen.blit(bg, (0, 0))  # Draw background image
 
-    def write_text(self, font_size, text_str, text_color, text_position):
-        text = self.font.render(text_str, True, text_color)
+    def write_text(self, text_str, text_color, text_position, font="assets/Neuropol X Rg.otf", font_size=20):
+        font = pygame.font.Font(font, font_size)
+        text = font.render(text_str, True, text_color)
         self.screen.blit(text, text_position)
 
     def draw_game_info(self):
         lives_pos = [f'Lives: {self.engine.get_lives()}',
-                     (10, self.screen_height-120)]
+                     (20, self.screen_height-120)]
 
         score_pos = [f'Score: {self.engine.get_score()}',
                      (10, self.screen_height-80)]
@@ -126,4 +128,4 @@ class Game:
                          next_num_pos, power_token_count_pos, prev_action_pos, power_type_pos]
 
         for game_info in game_info_pos:
-            self.write_text(20, game_info[0], (255, 255, 255), game_info[1])
+            self.write_text(game_info[0], (255, 255, 255), game_info[1])
