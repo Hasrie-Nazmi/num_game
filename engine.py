@@ -12,6 +12,7 @@ class Engine:
         self.next_num = random.randint(1, 10)
         self.prev_action = None
         self.rounds = 1
+        self.error = None
 
     def add(self):
         self.score += self.next_num
@@ -34,7 +35,7 @@ class Engine:
 
     def divi(self):
         if (self.score / self.next_num) < 1:
-            print("Your score is too low to divide by this number")
+            self.error = "Your score is too low to divide by this number"
         else:
             self.prev_action = "divi"
             self.score /= self.next_num
@@ -49,6 +50,7 @@ class Engine:
     def clear_next_num(self):
         if self.next_num is not None:
             self.next_num = None
+            self.error = None
 
     def num_power_count(self):
         self.num_power_token += 1
@@ -101,6 +103,9 @@ class Engine:
 
     def get_lives(self):
         return self.lives
+
+    def get_error(self):
+        return self.error
 
     def end_game(self):
         if self.lives <= 0 or self.score < 0:

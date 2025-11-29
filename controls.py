@@ -11,5 +11,6 @@ class Controls:
 
         if control_input in controls_dict:
             controls_dict[control_input]()
+            return True
         else:
-            print("Wrong input")
+            return False

@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 
 from engine import Engine
 from controls import Controls
@@ -94,8 +95,16 @@ class Game:
                         key_input = self.wait_for_key()
                         key_input_confirm = self.wait_for_key()
                         if key_input == key_input_confirm:
-                            self.controls.button_controls(
+                            correct_input = self.controls.button_controls(
                                 self.engine, key_input_confirm)
+                            if not correct_input:
+                                self.popup_message("Wrong input")
+                                time.sleep(2)
+                            if self.engine.get_error() is not None:
+                                self.popup_message(
+                                    self.engine.get_error(), 10, 500)
+                                time.sleep(2)
+
                         self.clock.tick(60)
                         pygame.display.flip()
 
@@ -109,6 +118,15 @@ class Game:
         font = pygame.font.Font(font, font_size)
         text = font.render(text_str, True, text_color)
         self.screen.blit(text, text_position)
+
+    def popup_message(self, text_str, rect_x=10, rect_width=200):
+        rect = pygame.Rect(rect_x, 10, rect_width, 80)
+        pygame.draw.rect(self.screen, (128, 0, 0), rect)
+        font = pygame.font.Font("assets/Neuropol X Rg.otf", 15)
+        text = font.render(text_str, True, (255, 255, 255))
+        text_rect = text.get_rect(center=rect.center)
+        self.screen.blit(text, text_rect)
+        pygame.display.flip()
 
     def draw_game_info(self):
         lives_pos = [f'Lives: {self.engine.get_lives()}',
