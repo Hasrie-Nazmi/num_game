@@ -27,18 +27,38 @@ class Game:
                   "divi.jpg": (15, 400),
                   "powerup.jpg": (350, 400)}
         self.screen.fill((30, 30, 60))
-        for img in images:
+        # for img in images:
 
-            image = pygame.image.load(f"assets/instructions/{img}")
-            image = pygame.transform.scale(image, (300, 400))
-            self.screen.blit(image, images[img])
+        #     image = pygame.image.load(f"assets/instructions/{img}")
+        #     image = pygame.transform.scale(image, (300, 400))
+        #     self.screen.blit(image, images[img])
+
+        self.draw_control_keys("W", 20, 20)
+        self.write_text(
+            "ADD: Adds Score with Next Number but will minus 1 life", (255, 255, 255), (80, 35), font_size=14)
+        self.draw_control_keys("A", 20, 100)
+        self.write_text(
+            "MULTIPLY: Multiply Score with Next Number but it will subtract your lives with the Next Number", (255, 255, 255), (80, 115), font_size=14)
+        self.draw_control_keys("S", 20, 180)
+        self.write_text(
+            "SUB: Subtracts score with Next Number. It will minus 1 life but you gain 1 power token.", (255, 255, 255), (80, 195), font_size=14)
+        self.draw_control_keys("D", 20, 260)
+        self.write_text(
+            "DIVIDE: Divides Score with Next Number but you gain Lives according to the Next Number", (255, 255, 255), (80, 275), font_size=14)
+
+        self.draw_control_keys("Q", 20, 340)
+        self.write_text(
+            "POWER UP: Activates the Power Up according to the accumulated Power Tokens. ", (255, 255, 255), (80, 355), font_size=14)
+        self.write_text(
+            "10 Tokens = Score x 5, 20 Tokens = Score & Lives x 5", (255, 255, 255), (80, 375), font_size=14)
 
         self.write_text("NOTE: During gameplay, tap",
-                        (255, 255, 255), (675, 500), font_size=15)
+                        (255, 255, 255), (20, 500), font_size=15)
         self.write_text("key twice to confirm action",
-                        (255, 255, 255), (675, 525), font_size=15)
+                        (255, 255, 255), (20, 525), font_size=15)
         self.write_text("Press 'SPACE' to continue",
-                        (255, 255, 255), (700, 700), font_size=15)
+                        (255, 255, 255), (self.screen_width/2-175, 700), font_size=20)
+
         pygame.display.flip()
 
         key_input = self.wait_for_key()
@@ -118,6 +138,21 @@ class Game:
         font = pygame.font.Font(font, font_size)
         text = font.render(text_str, True, text_color)
         self.screen.blit(text, text_position)
+
+    def draw_control_keys(self, key_name, x_pos, y_pos):
+        rect = pygame.Rect(x_pos, y_pos, 50, 50)
+        pygame.draw.rect(
+            self.screen,
+            (255, 255, 255),
+            rect,
+            width=2,
+            border_radius=10
+        )
+
+        font = pygame.font.Font("assets/Neuropol X Rg.otf", 15)
+        text = font.render(key_name, True, (255, 255, 255))
+        text_rect = text.get_rect(center=rect.center)
+        self.screen.blit(text, text_rect)
 
     def popup_message(self, text_str, rect_x=10, rect_width=200):
         rect = pygame.Rect(rect_x, 10, rect_width, 80)
