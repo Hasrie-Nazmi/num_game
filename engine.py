@@ -8,7 +8,7 @@ class Engine:
         self.score = random.randint(1, 10)
         self.high_score = self.score
         self.num_power = None
-        self.num_power_token = 0
+        self.num_power_token = 10
         self.next_num = random.randint(1, 10)
         self.prev_action = None
         self.rounds = 1
@@ -66,11 +66,11 @@ class Engine:
         if self.num_power is not None:
             if self.num_power == "S":
                 self.score *= 5
-                self.prev_action = "S Squared"
+                self.prev_action = "S Activated"
             if self.num_power == "S&L":
                 self.score *= 5
                 self.lives *= 5
-                self.prev_action = "S&L Squared"
+                self.prev_action = "S&L Activated"
             self.num_power = None
             self.num_power_token = 0
             self.clear_next_num()

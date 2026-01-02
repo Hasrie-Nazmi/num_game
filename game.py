@@ -18,21 +18,9 @@ class Game:
         display_info = pygame.display.Info()
         self.screen_width = display_info.current_w
         self.screen_height = display_info.current_h
+        self.font_name = "assets/Neuropol X Rg.otf"
 
     def start_screen(self):
-
-        images = {"add.jpg": (15, 10),
-                  "sub.jpg": (350, 10),
-                  "multi.jpg": (685, 10),
-                  "divi.jpg": (15, 400),
-                  "powerup.jpg": (350, 400)}
-        self.screen.fill((30, 30, 60))
-        # for img in images:
-
-        #     image = pygame.image.load(f"assets/instructions/{img}")
-        #     image = pygame.transform.scale(image, (300, 400))
-        #     self.screen.blit(image, images[img])
-
         self.draw_control_keys("W", 20, 20)
         self.write_text(
             "ADD: Adds Score with Next Number but will minus 1 life", (255, 255, 255), (80, 35), font_size=14)
@@ -67,6 +55,9 @@ class Game:
 
     def game_start(self):
         self.set_background_img("assets/game_background.jpg")
+        self.draw_corner_decoration(0, self.screen_height-130, inverse=False)
+        self.draw_corner_decoration(
+            self.screen_width-378, self.screen_height-100, inverse=True)
         self.draw_game_info()
         pygame.display.flip()
 
@@ -74,7 +65,7 @@ class Game:
         self.set_background_img("assets/endgame_background.jpg")
 
         self.write_text("GAME OVER!", (255, 255, 255),
-                        (self.screen_width/2-75, self.screen_height/2))
+                        (self.screen_width/2-80, self.screen_height/2))
         self.write_text(f"SCORE: {self.engine.get_high_scores():.2f}", (255, 255, 255),
                         (self.screen_width/2-300, self.screen_height/2+100))
         self.write_text(f"ROUNDS: {self.engine.get_rounds()}", (255, 255, 255),
@@ -132,10 +123,10 @@ class Game:
         bg = pygame.image.load(img).convert()
         bg = pygame.transform.scale(
             bg, (self.screen_width, self.screen_height))
-        self.screen.blit(bg, (0, 0))  # Draw background image
+        self.screen.blit(bg, (0, 0))
 
-    def write_text(self, text_str, text_color, text_position, font="assets/Neuropol X Rg.otf", font_size=20):
-        font = pygame.font.Font(font, font_size)
+    def write_text(self, text_str, text_color, text_position, font_size=20):
+        font = pygame.font.Font(self.font_name, font_size)
         text = font.render(text_str, True, text_color)
         self.screen.blit(text, text_position)
 
@@ -149,7 +140,7 @@ class Game:
             border_radius=10
         )
 
-        font = pygame.font.Font("assets/Neuropol X Rg.otf", 15)
+        font = pygame.font.Font(self.font_name, 15)
         text = font.render(key_name, True, (255, 255, 255))
         text_rect = text.get_rect(center=rect.center)
         self.screen.blit(text, text_rect)
@@ -157,21 +148,46 @@ class Game:
     def popup_message(self, text_str, rect_x=10, rect_width=200):
         rect = pygame.Rect(rect_x, 10, rect_width, 80)
         pygame.draw.rect(self.screen, (128, 0, 0), rect)
-        font = pygame.font.Font("assets/Neuropol X Rg.otf", 15)
+        font = pygame.font.Font(self.font_name, 15)
         text = font.render(text_str, True, (255, 255, 255))
         text_rect = text.get_rect(center=rect.center)
         self.screen.blit(text, text_rect)
         pygame.display.flip()
 
+    def draw_corner_decoration(self, x, y, w=375, h=125, inverse=False):
+        cut = 120  # how much corner to cut
+        if inverse:
+            points = [
+                (x + cut, y),         # diagonal start
+                (x + w, y),           # top-right
+                (x + w, y + h),       # bottom-right
+                (x, y + h),           # bottom-left
+                (x, y + cut),         # diagonal end
+            ]
+
+        else:
+            points = [
+                (x, y),                   # top-left
+                (x + w - cut, y),         # diagonal start
+                (x + w, y + cut),         # diagonal end
+                (x + w, y + h),           # bottom-right
+                (x, y + h),               # bottom-left
+            ]
+
+        pygame.draw.polygon(self.screen, (255, 200, 0), points, 2)
+
     def draw_game_info(self):
         lives_pos = [f'Lives: {self.engine.get_lives()}',
-                     (20, self.screen_height-120)]
+                     (10, self.screen_height-120)]
 
-        score_pos = [f'Score: {self.engine.get_score()}',
+        score_pos = [f'Score: {self.engine.get_score():.2f}',
                      (10, self.screen_height-80)]
-
-        prev_action_pos = [f'Previous Actions: {self.engine.get_prev_action()}', (
-            10, self.screen_height-40)]
+        if self.engine.get_prev_action() is not None:
+            prev_action_pos = [f'Previous Actions: {self.engine.get_prev_action().upper()}', (
+                10, self.screen_height-40)]
+        else:
+            prev_action_pos = [f'Previous Actions: {self.engine.get_prev_action()}', (
+                10, self.screen_height-40)]
 
         rounds_pos = [f'Rounds: {self.engine.get_rounds()}',
                       (self.screen_width/2-50, 5)]
